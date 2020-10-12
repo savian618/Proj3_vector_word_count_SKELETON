@@ -33,6 +33,7 @@ namespace KP{
 			return entries[i].word;
 		}
 	}
+
 	int getNumbOccurAt(std::vector<constants::entry>  &entries,int i){
 		int len = entries.size();
 
@@ -95,7 +96,6 @@ namespace KP{
 				entries[i].number_occurences++;
 			}
 		}
-
 	}
 
 	/*
@@ -105,13 +105,25 @@ namespace KP{
 	 * See the course lectures and demo project for how to sort a vector of structs
 	 */
 	void sort(std::vector<constants::entry>  &entries, constants::sortOrder so){
+		switch(so){
+
+		case constants::NONE:
+			break;
+
+		case constants::ASCENDING:
+			break;
+
+		case constants::DESCENDING:
+			break;
+
+		case constants::NUMBER_OCCURRENCES:
+			break;
+
+		default:
+			break;
+
+		}
 
 	}
-
 }
-
-
-
-
-
 
