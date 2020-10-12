@@ -25,7 +25,7 @@ namespace KP{
 	string getWordAt(std::vector<constants::entry>  &entries, int i){
 		int len = entries.size();
 		if(i >= len){
-			return entries[len - 1].word;
+			return entries.back().word;
 		}
 		else{
 			return entries[i].word;
@@ -33,8 +33,8 @@ namespace KP{
 	}
 	int getNumbOccurAt(std::vector<constants::entry>  &entries,int i){
 		int len = entries.size();
-		if(i >= entries.size()){
-			return entries[len - 1].number_occurences;
+		if(i >= len){
+			return entries.back().number_occurences;
 		}
 		else{
 			return entries[i].number_occurences;
@@ -46,16 +46,47 @@ namespace KP{
 	 * returns false: myfstream is not open
 	 *         true: otherwise*/
 	bool processFile(std::vector<constants::entry>  &entries,std::fstream &myfstream){
+		if(!myfstream.is_open()){
+			return false;
+		}
+
+		string line;
+
+		while(!myfstream.eof()){
+			getline(myfstream, line);
+			processLine(entries, line);
+		}
+
 		return true;
 	}
 	/*take 1 line and extract all the tokens from it
 	feed each token to processToken for recording*/
 	void processLine(std::vector<constants::entry>  &entries,std::string &myString){
+		stringstream ss(myString);
+		string pToken;
 
+		while(getline(ss, pToken, constants::CHAR_TO_SEARCH_FOR)){
+			processToken(entries, pToken);
+		}
 	}
 
 	/*Keep track of how many times each token seen*/
 	void processToken(std::vector<constants::entry>  &entries,std::string &token){
+		if(token!= " "){
+			if(token.empty() == false){
+				constants::entry mp;
+				mp.word = token;
+				mp.word_uppercase = token;
+				mp.number_occurences = 1;
+				entries.push_back(mp);
+			}
+		}
+
+		for (int i = 0; i < entries.size(); i++){
+			if(entries[i].word == token || entries[i].word_uppercase == token){
+				entries[i].number_occurences++;
+			}
+		}
 
 	}
 
