@@ -15,8 +15,8 @@ using namespace std;
 /*if you are debugging the file must be in the project parent directory
   in this case Project2 with the .project and .cProject files*/
 bool openFile(fstream& myfile, const string& myFileName,
-		ios_base::openmode){
-	myfile.open(myFileName);
+		ios_base::openmode mode){
+	myfile.open(myFileName, mode);
 	if(myfile.is_open()){
 		return true;
 	}
@@ -40,15 +40,19 @@ void closeFile(fstream& myfile){
  * */
 int writetoFile(vector<constants::entry>  &entries, const string &outputfilename){
 	fstream myfile;
+	openFile(myfile, outputfilename);
 	if(!openFile(myfile, outputfilename)){
 		return constants::FAIL_FILE_DID_NOT_OPEN;
 	}
+
 	if(entries.size() == 0){
 		return  constants::FAIL_NO_ARRAY_DATA;
 	}
+
 	for (int i = 0; i < entries.size(); i++){
 		myfile << entries[i].word << endl;
 	}
+
 	closeFile(myfile);
 	return constants::SUCCESS;
 }

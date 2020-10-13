@@ -5,7 +5,10 @@
  *      Author: Savian Elam
  */
 
+#include "../includes/utilities.h"
 #include "../includes/array_functions.h"
+#include <algorithm>
+
 
 using namespace std;
 
@@ -52,6 +55,7 @@ namespace KP{
 	 *         true: otherwise*/
 	bool processFile(std::vector<constants::entry>  &entries,std::fstream &myfstream){
 
+
 		if(!myfstream.is_open()){
 			return false;
 		}
@@ -65,6 +69,7 @@ namespace KP{
 
 		return true;
 	}
+
 	/*take 1 line and extract all the tokens from it
 	feed each token to processToken for recording*/
 	void processLine(std::vector<constants::entry>  &entries,std::string &myString){
@@ -78,16 +83,14 @@ namespace KP{
 
 	/*Keep track of how many times each token seen*/
 	void processToken(std::vector<constants::entry>  &entries,std::string &token){
-
-		if(token!= " "){
-			if(token.empty() == false){
-				constants::entry mp;
-				mp.word = token;
-				mp.word_uppercase = token;
-				mp.number_occurences = 1;
-				entries.push_back(mp);
-			}
-		}
+		strip_unwanted_chars();
+		constants::entry mp;
+		mp.word = token;
+		string tempTok = token;
+		toUpper(tempTok);
+		mp.word_uppercase = tempTok;
+		mp.number_occurences = 1;
+		entries.push_back(mp);
 
 		int len = entries.size();
 
@@ -97,6 +100,18 @@ namespace KP{
 			}
 		}
 	}
+
+	bool sortAscending(const constants::entry& a, const constants::entry b ){
+		return a.word > b.word;
+	}
+
+	bool sortDescending(const constants::entry& a, const constants::entry b ){
+			return a.word < b.word;
+		}
+
+	bool sortNum(const constants::entry& a, const constants::entry b ){
+			return a.number_occurences > b.number_occurences;
+		}
 
 	/*
 	 * Sort myEntryArray based on so enum value.
@@ -111,19 +126,21 @@ namespace KP{
 			break;
 
 		case constants::ASCENDING:
+			sort(entries.begin(), entries.end(), sortAscending);
 			break;
 
 		case constants::DESCENDING:
+			sort(entries.begin(), entries.end(), sortDescending);
 			break;
 
 		case constants::NUMBER_OCCURRENCES:
+			sort(entries.begin(), entries.end(), sortDescending);
 			break;
 
 		default:
 			break;
 
 		}
-
 	}
 }
 
