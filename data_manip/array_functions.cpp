@@ -8,6 +8,7 @@
 #include "../includes/utilities.h"
 #include "../includes/array_functions.h"
 #include <algorithm>
+#include <sstream>
 
 
 using namespace std;
@@ -83,33 +84,47 @@ namespace KP{
 
 	/*Keep track of how many times each token seen*/
 	void processToken(std::vector<constants::entry>  &entries,std::string &token){
-		strip_unwanted_chars();
-		constants::entry mp;
-		mp.word = token;
-		string tempTok = token;
-		toUpper(tempTok);
-		mp.word_uppercase = tempTok;
-		mp.number_occurences = 1;
-		entries.push_back(mp);
+		strip_unwanted_chars(token);
+		if(token.empty() == false){
 
-		int len = entries.size();
+			constants::entry mp;
+			mp.word = token;
+			string tempTok = token;
+			toUpper(tempTok);
+			mp.word_uppercase = tempTok;
+			mp.number_occurences = 1;
 
-		for(int i = 0; i < len; i++){
-			if(entries[i].word == token || entries[i].word_uppercase == token){
-				entries[i].number_occurences++;
+			int len = entries.size();
+
+			int tokExist = 0;
+
+			for(int i = 0; i < len; i++){
+				if(entries[i].word_uppercase == mp.word_uppercase){
+					entries[i].number_occurences++;
+					tokExist -=100;
+				}
+				else{
+					tokExist += 2;
+				}
+			}
+			if(entries.size() == 0){
+				entries.push_back(mp);
+			}
+			if(tokExist > 0){
+				entries.push_back(mp);
 			}
 		}
 	}
 
-	bool sortAscending(const constants::entry& a, const constants::entry b ){
-		return a.word > b.word;
+	bool sortAscending(constants::entry &a,constants::entry &b ){
+		return a.word_uppercase < b.word_uppercase;
 	}
 
-	bool sortDescending(const constants::entry& a, const constants::entry b ){
-			return a.word < b.word;
+	bool sortDescending(constants::entry &a,constants::entry &b ){
+			return a.word_uppercase > b.word_uppercase;
 		}
 
-	bool sortNum(const constants::entry& a, const constants::entry b ){
+	bool sortNum(constants::entry &a, constants::entry &b ){
 			return a.number_occurences > b.number_occurences;
 		}
 
@@ -134,7 +149,7 @@ namespace KP{
 			break;
 
 		case constants::NUMBER_OCCURRENCES:
-			sort(entries.begin(), entries.end(), sortDescending);
+			sort(entries.begin(), entries.end(), sortNum);
 			break;
 
 		default:

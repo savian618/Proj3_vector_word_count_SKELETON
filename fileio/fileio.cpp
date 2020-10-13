@@ -5,8 +5,6 @@
  *      Author: Savian Elam
  */
 
-#include <iostream>
-#include <fstream>
 
 using namespace std;
 
@@ -40,17 +38,17 @@ void closeFile(fstream& myfile){
  * */
 int writetoFile(vector<constants::entry>  &entries, const string &outputfilename){
 	fstream myfile;
-	openFile(myfile, outputfilename);
-	if(!openFile(myfile, outputfilename)){
+	openFile(myfile, outputfilename, ios_base::out);
+	if(!myfile.is_open()){
 		return constants::FAIL_FILE_DID_NOT_OPEN;
 	}
 
-	if(entries.size() == 0){
+	if(entries.empty()){
 		return  constants::FAIL_NO_ARRAY_DATA;
 	}
 
 	for (int i = 0; i < entries.size(); i++){
-		myfile << entries[i].word << endl;
+		myfile << entries[i].word << " " << entries[i].number_occurences << endl;
 	}
 
 	closeFile(myfile);
